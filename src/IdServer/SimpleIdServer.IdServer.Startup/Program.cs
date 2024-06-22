@@ -121,7 +121,7 @@ app
     .UseSIDSwagger()
     .UseSIDSwaggerUI()
     // .UseSIDReDoc()
-    .UseWsFederation()
+    // .UseWsFederation()
     .UseFIDO()
     .UseSamlIdp()
     .UseGotifyNotification()
@@ -372,8 +372,8 @@ void SeedData(WebApplication application, string scimBaseUrl)
             if (!dbContext.SerializedFileKeys.Any())
             {
                 dbContext.SerializedFileKeys.Add(KeyGenerator.GenerateRSASigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master, "rsa-1"));
-                dbContext.SerializedFileKeys.Add(KeyGenerator.GenerateECDSASigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master, "ecdsa-1"));
-                dbContext.SerializedFileKeys.Add(WsFederationKeyGenerator.GenerateWsFederationSigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master));
+                // dbContext.SerializedFileKeys.Add(KeyGenerator.GenerateECDSASigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master, "ecdsa-1"));
+                // dbContext.SerializedFileKeys.Add(WsFederationKeyGenerator.GenerateWsFederationSigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master));
             }
 
             if (!dbContext.CertificateAuthorities.Any())

@@ -71,6 +71,11 @@ task dockerUp {
 	exec { docker-compose up }
 }
 
+task dockerUpLocal {
+	$Env:TAG = GetDockerVersion
+	exec { docker-compose -f local-docker-compose.yml up -d }
+}
+
 task buildInstaller {
     New-Item $result_dir\windows64\IdServer -Type Directory
     New-Item $result_dir\windows64\IdServerWebsite -Type Directory
