@@ -27,6 +27,8 @@ services:
       MSSQL_SA_PASSWORD : "D54DE7hHpkG9"
     networks:
       proxy_net: null
+    ports:
+      - 1433:1433
   scim:
     build:
       context: .
@@ -58,11 +60,14 @@ services:
       SCIMBaseUrl: "https://scim.localhost.com"
       Authority: "https://idserver.localhost.com"
       SCIM__SCIMRepresentationsExtractionJobOptions__SCIMEdp: "https://scim.localhost.com"
+      JSON_SEEDS_FILE_PATH: "./seeding/users.json"
     depends_on:
       - db
       - scim
     networks:
       proxy_net: null
+    volumes:
+      - /media/respaldo/proyectos/namisic/deployment:/App/seeding:ro
   website:
     build:
       context: .

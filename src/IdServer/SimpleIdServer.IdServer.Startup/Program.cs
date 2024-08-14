@@ -27,11 +27,13 @@ using SimpleIdServer.IdServer.Notification.Gotify;
 using SimpleIdServer.IdServer.Provisioning.LDAP;
 using SimpleIdServer.IdServer.Provisioning.SCIM;
 using SimpleIdServer.IdServer.Pwd;
+using SimpleIdServer.IdServer.Seeding;
 using SimpleIdServer.IdServer.Sms;
 using SimpleIdServer.IdServer.Startup;
 using SimpleIdServer.IdServer.Startup.Configurations;
 using SimpleIdServer.IdServer.Startup.Converters;
 using SimpleIdServer.IdServer.Store.EF;
+using SimpleIdServer.IdServer.Store.EF.Seeding;
 using SimpleIdServer.IdServer.Swagger;
 using SimpleIdServer.IdServer.TokenTypes;
 using SimpleIdServer.IdServer.UI;
@@ -95,8 +97,8 @@ ConfigureIdServer(builder.Services);
 ConfigureCentralizedConfiguration(builder);
 
 // Uncomment these two lines to enable seed data from JSON file.
-// builder.Services.AddJsonSeeding(builder.Configuration);
-// builder.Services.AddEntitySeeders(typeof(UserEntitySeeder));
+builder.Services.AddJsonSeeding(builder.Configuration);
+builder.Services.AddEntitySeeders(typeof(UserEntitySeeder));
 
 var app = builder.Build();
 SeedData(app, identityServerConfiguration.SCIMBaseUrl);
@@ -128,7 +130,7 @@ app
     .UseSIDSwagger()
     .UseSIDSwaggerUI()
     // .UseSIDReDoc()
-    .UseWsFederation()
+    // .UseWsFederation()
     .UseFIDO()
     .UseSamlIdp()
     .UseGotifyNotification()
@@ -362,8 +364,8 @@ async void SeedData(WebApplication application, string scimBaseUrl)
             if (!dbContext.SerializedFileKeys.Any())
             {
                 dbContext.SerializedFileKeys.Add(KeyGenerator.GenerateRSASigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master, "rsa-1"));
-                dbContext.SerializedFileKeys.Add(KeyGenerator.GenerateECDSASigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master, "ecdsa-1"));
-                dbContext.SerializedFileKeys.Add(WsFederationKeyGenerator.GenerateWsFederationSigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master));
+                // dbContext.SerializedFileKeys.Add(KeyGenerator.GenerateECDSASigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master, "ecdsa-1"));
+                // dbContext.SerializedFileKeys.Add(WsFederationKeyGenerator.GenerateWsFederationSigningCredentials(SimpleIdServer.IdServer.Constants.StandardRealms.Master));
             }
 
             if (!dbContext.CertificateAuthorities.Any())
@@ -436,8 +438,8 @@ async void SeedData(WebApplication application, string scimBaseUrl)
             dbContext.SaveChanges();
 
             // Uncomment these two lines to enable seed data from an external resource like JSON file.
-            // ISeedStrategy seedingService = scope.ServiceProvider.GetService<ISeedStrategy>();
-            // seedingService.SeedDataAsync().Wait();
+            ISeedStrategy seedingService = scope.ServiceProvider.GetService<ISeedStrategy>();
+            seedingService.SeedDataAsync().Wait();
         }
 
         void EnableIsolationLevel(StoreDbContext dbContext)
