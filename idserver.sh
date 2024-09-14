@@ -1,9 +1,13 @@
 #!/usr/bin/bash
-base_dir="$(pwd)"
 config="debug"
 
-if [[ $ID_SERVER_PATH != '' ]]; then
-    base_dir=$ID_SERVER_PATH
+# Getting the bash script executing path. See: https://stackoverflow.com/a/630387
+base_dir="$(dirname -- "${BASH_SOURCE[0]}")" # relative
+base_dir="$(cd -- "$base_dir" && pwd)"       # absolutized and normalized
+
+if [[ -z "$base_dir" ]]; then
+    echo "the path is not accessible"
+    exit 1
 fi
 
 source_dir="$base_dir/src"
